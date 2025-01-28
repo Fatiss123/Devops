@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Fonts Form Google Font */
+        @import url('https://fonts.googleapis.com/css?family=Abel|Abril+Fatface|Alegreya|Arima+Madurai|Dancing+Script|Dosis|Merriweather|Oleo+Script|Overlock|PT+Serif|Pacifico|Playball|Playfair+Display|Share|Unica+One|Vibur');
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-image: #fff;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            font-family: 'Abel', sans-serif;
+            opacity: .95;
+        }
+
+        form {
+            width: 450px;
+            min-height: 500px;
+            border-radius: 5px;
+            margin: 2% auto;
+            box-shadow: 0 9px 50px hsla(20, 67%, 75%, 0.31);
+            padding: 2%;
+            background-image: #f9f9f9;
+        }
+
+        header {
+            margin: 2% auto 10% auto;
+            text-align: center;
+        }
+
+        header h2 {
+            font-size: 250%;
+            font-family: 'Playfair Display', serif;
+            color: #3e403f;
+        }
+
+        header p {
+            letter-spacing: 0.05em;
+        }
+
+        .field-set {
+            margin: 0 auto;
+        }
+
+        .input-item {
+            background: #fff;
+            color: #333;
+            padding: 14.5px 0px 15px 9px;
+            border-radius: 5px 0px 0px 5px;
+        }
+
+        input.form-input, button.btn {
+            width: 100%;
+            height: 50px;
+            padding: 15px;
+            font-size: 16px;
+            font-family: 'Abel', sans-serif;
+            color: #5E6472;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: 0.2s linear;
+        }
+
+        button.btn {
+            background: #50a6ed;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        button.btn:hover {
+            transform: translateY(3px);
+        }
+
+        p {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        p a {
+            color: #252537;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="con">
+                <header class="head-form">
+                    <h2>Nouveau utilisateur</h2>
+                    <p>Entrer votre nom, votre email et password</p>
+                </header>
+                <div class="field-set">
+                    <input class="form-input" type="text" name="username" placeholder="Nom" required>
+                    <input class="form-input" type="email" name="email" placeholder="Email" required>
+                    <input class="form-input" type="password" name="password" placeholder="Password" id="pwd" required>
+                    <button class="btn submits sign-up" type="submit">Sign Up</button>
+                </div>
+                <p>T'as déjà une compte ? <a href="{% url 'login' %}">Log in</a></p>
+            </div>
+        
+            {% for message in messages %}
+            <p style="color: rgb(24, 175, 62);">{{ message }}</p>
+            {% endfor %}
+        </form>
+        
+    </div>
+</body>
+</html>

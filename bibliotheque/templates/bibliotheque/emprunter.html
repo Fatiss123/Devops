@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emprunter un Livre</title>
+    <style>
+        /* Styles généraux */
+        @import url('https://fonts.googleapis.com/css?family=Abel|Playfair+Display');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #fff;
+            font-family: 'Abel', sans-serif;
+        }
+        form {
+            width: 450px;
+            min-height: 650px;
+            margin: 5% auto;
+            padding: 2%;
+            border-radius: 5px;
+            box-shadow: 0 9px 50px rgba(0, 0, 0, 0.1);
+            background: #f9f9f9;
+        }
+        header h2 {
+            font-size: 2.5em;
+            font-family: 'Playfair Display', serif;
+            color: #3e403f;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        p {
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+        }
+        label {
+            display: block;
+            font-size: 1em;
+            margin: 10px 0 5px;
+            color: #333;
+        }
+        input[type="text"], input[type="email"], input[type="date"], input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        button {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            font-size: 1em;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .error {
+            color: red;
+            font-size: 1em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST" action="{% url 'emprunter_livre' livre.id %}">
+        {% csrf_token %}
+        <header>
+            <h2>Emprunter un Livre</h2>
+        </header>
+        <p>Veuillez remplir les informations ci-dessous pour emprunter un livre.</p>
+    
+        <label for="titre">Titre du livre</label>
+        <input type="text" id="titre" name="titre" placeholder="Titre du livre" required>
+    
+        <!-- Email -->
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Votre email" required>
+    
+        <!-- Numéro de téléphone -->
+        <label for="telephone">Numéro de téléphone</label>
+        <input type="tel" id="telephone" name="telephone" placeholder="Votre numéro de téléphone" required>
+    
+        <!-- Date d'emprunt -->
+        <label for="date_emprunt">Date d'emprunt</label>
+        <input type="date" id="date_emprunt" name="date_emprunt" value="{{ date_actuelle }}" readonly required>
+    
+        <!-- Date de retour prévue -->
+        <label for="date_rendement">Date de retour prévue</label>
+        <input type="date" id="date_rendement" name="date_rendement" required>
+    
+        <button type="submit">Confirmer l'emprunt</button>
+    </form>
+    
+</body>
+</html>

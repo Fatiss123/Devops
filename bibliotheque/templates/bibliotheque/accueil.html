@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliothèque</title>
+    <style>
+        /* Styles de base */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: Helvetica, Verdana, sans-serif;
+        }
+        nav {
+            background-color: #50a6ed;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 40px; /* Augmente le padding pour plus de largeur */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: white;
+            z-index: 1000;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .list {
+            list-style-type: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        .list li {
+            margin-left: 20px;
+        }
+    
+        /* Barre de recherche améliorée */
+        .search-form {
+            display: flex;
+            align-items: center;
+            margin: 20px auto;
+            max-width: 600px;
+            margin-top: 100px;
+            background-color: #f5f5f5;
+            border-radius: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .search-form input[type="text"] {
+            padding: 15px 20px;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            flex: 1;
+            background-color: transparent;
+            border-radius: 30px 0 0 30px;
+        }
+        .search-form input[type="text"]::placeholder {
+            color: #aaa;
+            font-style: italic;
+        }
+        .search-form button {
+            background-color: #50a6ed;
+            color: white;
+            font-size: 16px;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border-radius: 30px; /* Coins arrondis pour tout le bouton */
+        }
+        .search-form button:hover {
+            background-color: #2882cc;
+        }
+    
+        /* Galerie de livres */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin-top: 100px; /* Pour éviter que la navbar recouvre le contenu */
+        }
+        .gallery-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .gallery-item img {
+            width: 150px;
+            height: auto;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .no-results {
+            text-align: center;
+            color: red;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .button-emprunter {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #50a6ed;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .button-emprunter:hover {
+            background-color: #2187da;
+        }
+                /* Pied de page */
+                footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #50a6ed;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#">Bibliothèque</a>
+        <ul class="list">
+            <li><a href="{% url 'accueil' %}">Accueil</a></li>
+            <li><a href="{% url 'les_emprunts' %}">Les Emprunts</a></li>
+            {% if request.user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Déconnexion</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Connexion</a></li>
+                <li><a href="{% url 'signup' %}">Inscription</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- Barre de recherche -->
+    <form class="search-form">
+        <input type="text" id="searchInput" placeholder="Rechercher un livre">
+        <button type="button" id="searchButton">Rechercher</button>
+    </form>
+
+    <!-- Galerie de livres -->
+    <div id="gallery" class="gallery">
+        {% for livre in livres %}
+        <div class="gallery-item">
+            <img src="{{ livre.image.url }}" alt="{{ livre.titre }}">
+            <h3>{{ livre.titre }}</h3>
+            <p>Auteur : {{ livre.auteur }}</p>
+            <p>Genre : {{ livre.genre }}</p>
+            <p>Année de publication : {{ livre.annee_publication }}</p>
+            <a href="{% url 'emprunter_livre' livre.id %}" class="button-emprunter">Emprunter</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="no-results" id="noResults" style="display: none;">Livre non disponible</div>
+
+    <footer>
+        &copy; 2025 Bibliothèque. Tous droits réservés.
+    </footer>
+    <script>
+        
+    document.getElementById('searchButton').addEventListener('click', function () {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const gallery = document.getElementById('gallery');
+        const items = gallery.getElementsByClassName('gallery-item');
+        let hasResults = false;
+
+        // Parcourir tous les livres dans la galerie
+        for (const item of items) {
+            const title = item.querySelector('h3').textContent.toLowerCase();
+            const author = item.querySelector('p:nth-child(3)').textContent.toLowerCase();
+
+            // Vérifier si le titre ou l'auteur correspond à la recherche
+            if (title.includes(input) || author.includes(input)) {
+                item.style.display = ''; // Afficher l'élément
+                hasResults = true;
+            } else {
+                item.style.display = 'none'; // Masquer l'élément
+            }
+        }
+
+        // Afficher ou masquer le message "pas de résultats"
+        document.getElementById('noResults').style.display = hasResults ? 'none' : 'block';
+    });
+
+    // Permettre la recherche en appuyant sur "Entrée"
+    document.getElementById('searchInput').addEventListener('keyup', function (event) {
+        if (event.key === 'Enter') {
+            document.getElementById('searchButton').click();
+        }
+    });
+    </script>
+</body>
+</html>

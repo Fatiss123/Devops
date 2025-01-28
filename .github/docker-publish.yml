@@ -1,0 +1,26 @@
+name: Docker Build and Push
+
+on:
+  push:
+    branches:
+      - master  # Le workflow se déclenche sur les pushs vers la branche master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # Utilisation de la version stable de l'action checkout
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2  # Connecte Docker Hub à GitHub Actions
+      with:
+        username: ${{ secrets.fqtis34i }}  # Utilisez un nom explicite pour les secrets
+        password: ${{ secrets.123456789 }}
+
+    - name: Build Docker image
+      run: docker build -t fqtis34i/bibliotheque:latest .  # Construire l'image Docker
+
+    - name: Push Docker image
+      run: docker push fqtis34i/bibliotheque:latest  # Pousser l'image vers Docker Hub

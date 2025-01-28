@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Emprunts</title>
+    <style>
+        /* Styles de base */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: Helvetica, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        /* Navbar (appliqué depuis la première page) */
+        nav {
+            background-color: #50a6ed;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: white;
+            z-index: 1000;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .list {
+            list-style-type: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        .list li {
+            margin-left: 20px;
+        }
+
+        /* Titres h1 */
+        h1 {
+            margin-top: 80px;
+            text-align: center;
+            font-size: 1.8em; /* Réduction de la taille */
+            color: #50a6ed;
+        }
+
+        /* Tableaux */
+        table {
+            width: 80%; /* Réduction de la largeur */
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 0.9em; /* Réduction de la taille du texte */
+        }
+        table + table {
+    margin-top: 10px; /* Réduire l'espace entre les tables */
+}
+        th, td {
+            padding: 10px; /* Réduction des marges internes */
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #50a6ed;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Boutons */
+        .button {
+            appearance: none;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 15px; /* Réduction des dimensions */
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .button:hover {
+            transform: scale(1.05);
+        }
+        .button-4 {
+            background-color: #f6f639;
+            color: #24292E;
+        }
+        .button-4:hover {
+            background-color: #e3e331;
+        }
+        .button-5 {
+            background-color: #d9534f;
+            color: white;
+        }
+        .button-5:hover {
+            background-color: #c9302c;
+        }
+
+        /* Pied de page */
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #50a6ed;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#">Bibliothèque</a>
+        <ul class="list">
+            <li><a href="{% url 'accueil' %}">Accueil</a></li>
+            <li><a href="{% url 'les_emprunts' %}">Les Emprunts</a></li>
+            {% if request.user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Déconnexion</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Connexion</a></li>
+                <li><a href="{% url 'signup' %}">Inscription</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    <main>
+        <h1>Mes Emprunts</h1>
+        {% if livres_empruntes %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Auteur</th>
+                        <th>Date d'emprunt</th>
+                        <th>Date de retour</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emprunt in livres_empruntes %}
+                        <tr>
+                            <td>{{ emprunt.livre.titre }}</td>
+                            <td>{{ emprunt.livre.auteur }}</td>
+                            <td>{{ emprunt.date_emprunt }}</td>
+                            <td>{{ emprunt.date_rendement }}</td>
+                            <td>
+                                <a href="{% url 'rendre_livre' emprunt.livre.id %}" class="button button-4">Rendre ce livre</a>
+                                <a href="{% url 'perdre_livre' emprunt.livre.id %}" class="button button-5">Livre perdu</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Vous n'avez pas encore emprunté de livres.</p>
+        {% endif %}
+        
+        <h1>Livres Perdus</h1>
+        {% if livres_perdus %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Date de perte</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for livre in livres_perdus %}
+                        <tr>
+                            <td>{{ livre.titre }}</td>
+                            <td>{{ livre.date_signalement }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Vous n'avez pas signalé de livre comme perdu.</p>
+        {% endif %}
+        
+    </main>
+    <footer>
+        &copy; 2025 Bibliothèque. Tous droits réservés.
+    </footer>
+</body>
+</html>

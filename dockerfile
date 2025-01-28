@@ -21,3 +21,4 @@ EXPOSE 5000
 
 # Start the Django development server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:5000"]
+# 

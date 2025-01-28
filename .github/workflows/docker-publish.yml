@@ -16,8 +16,8 @@ jobs:
     - name: Log in to Docker Hub
       uses: docker/login-action@v2  # Connecte Docker Hub à GitHub Actions
       with:
-        username: ${{ secrets.fqtis34i }}  # Utilisez un nom explicite pour les secrets
-        password: ${{ secrets.123456789 }}
+        username: ${{ secrets.YOUR_SCRET_NAME }}  # Utilisez un nom explicite pour les secrets
+        password: ${{ secrets.YOUR_SCRET_PASSWORD }}
 
     - name: Build Docker image
       run: docker build -t fqtis34i/bibliotheque:latest .  # Construire l'image Docker
